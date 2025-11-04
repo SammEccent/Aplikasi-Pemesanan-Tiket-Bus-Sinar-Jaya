@@ -82,4 +82,11 @@ class Database
     {
         return $this->dbh->lastInsertId();
     }
+
+    // Get the row count
+    public function rowCount()
+    {
+        // Pastikan statement sudah dieksekusi sebelum memanggil rowCount
+        return $this->stmt->rowCount();
+    }
 }

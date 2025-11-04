@@ -54,9 +54,9 @@
                     <h1 id="login-heading" class="login-title">Welcome back</h1>
                     <p class="login-sub">Sign in to continue to your account</p>
 
-                    <form action="<?= BASEURL ?>auth/login" method="POST" class="login-form" autocomplete="on">
-                        <label class="visually-hidden" for="username">Username or email</label>
-                        <input id="username" name="username" class="login-input" type="text" placeholder="Username or email" required autofocus>
+                    <form action="<?= BASEURL ?>auth/processLogin" method="POST" class="login-form" autocomplete="on">
+                        <label class="visually-hidden" for="username">Email</label>
+                        <input id="email" name="email" class="login-input" type="text" placeholder="Email" required autofocus>
 
                         <label class="visually-hidden" for="password">Password</label>
                         <input id="password" name="password" class="login-input" type="password" placeholder="Password" required>

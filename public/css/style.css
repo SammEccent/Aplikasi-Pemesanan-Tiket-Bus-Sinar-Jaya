@@ -420,23 +420,37 @@ body {
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* anchor card to the right */
+  justify-content: flex-end;
   padding: 4rem;
   min-height: 100vh;
 }
 
 .login-card {
   width: 100%;
-  max-width: 520px; /* slightly narrower for better balance */
-  background: #ffffff;
+  /* PERBAIKAN 1: Mengurangi lebar maksimum
+    - max-width diubah dari 520px menjadi 480px untuk kartu login yang lebih kompak dan ramping.
+  */
+  max-width: 480px;
+  /* PERBAIKAN 2: Menggunakan warna surface (tema gelap) untuk background kartu.
+    - Mengubah #ffffff menjadi var(--color-surface)
+  */
+  background: var(--color-surface);
   border-radius: 14px;
-  padding: 0; /* inner padding handled by .card-body */
-  box-shadow: 0 18px 40px rgba(8, 12, 20, 0.08);
-  color: #0b1320;
+  padding: 0;
+  /* Mengurangi bayangan agar lebih halus pada latar belakang gelap */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  /* PERBAIKAN 3: Menggunakan warna teks utama (tema gelap)
+    - Mengubah #0b1320 menjadi var(--color-text)
+  */
+  color: var(--color-text);
   display: grid;
-  grid-template-columns: 1fr 0.18fr; /* left content + narrow decorative gutter */
+  grid-template-columns: 1fr 0.15fr; /* sedikit mempersempit aksen */
   overflow: hidden;
-  margin-right: 1.5rem; /* give some space from the viewport edge */
+  /* PERBAIKAN 4: Menghapus margin kanan berlebihan
+    - margin-right: 1.5rem; dihapus agar kartu rata dengan padding kanan. 
+  */
+  margin-right: 0;
+  border: 1px solid var(--glass-border); /* Tambahkan border halus */
 }
 
 .login-brand {
@@ -448,12 +462,14 @@ body {
 .brand-text .brand-name {
   display: block;
   font-weight: 700;
-  color: #0f4bd9;
+  /* Menggunakan warna primary */
+  color: var(--color-primary);
 }
 .brand-text .brand-tag {
   display: block;
   font-size: 0.75rem;
-  color: #7b8794;
+  /* Menggunakan warna teks sekunder */
+  color: var(--color-text-secondary);
 }
 
 .login-title {
@@ -461,7 +477,8 @@ body {
   margin: 0 0 0.25rem;
 }
 .login-sub {
-  color: #55606a;
+  /* Menggunakan warna teks sekunder */
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   margin-bottom: 1.25rem;
 }
@@ -474,20 +491,23 @@ body {
 .card-body {
   padding: 2.75rem 2.25rem 2.25rem 2.25rem;
 }
+
+/* PERBAIKAN 5: Menyesuaikan Card Accent untuk tema gelap 
+*/
 .card-accent {
   background: linear-gradient(
     180deg,
-    rgba(15, 75, 217, 0.06),
-    rgba(15, 75, 217, 0.02)
+    rgba(59, 130, 246, 0.1),
+    /* Menggunakan warna primary */ rgba(59, 130, 246, 0.05)
   );
-  border-left: 1px solid rgba(15, 75, 217, 0.06);
+  border-left: 1px solid rgba(59, 130, 246, 0.1);
   /* subtle textured stripe */
   background-image: repeating-linear-gradient(
       45deg,
-      rgba(255, 255, 255, 0.02) 0 2px,
+      rgba(255, 255, 255, 0.03) 0 2px,
       transparent 2px 6px
     ),
-    linear-gradient(180deg, rgba(15, 75, 217, 0.06), rgba(15, 75, 217, 0.02));
+    linear-gradient(180deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
 }
 .card-accent::after {
   content: "";
@@ -495,26 +515,31 @@ body {
   height: 100%;
   width: 100%;
 }
+
+/* PERBAIKAN 6: Menyesuaikan input field untuk tema gelap 
+*/
 .login-input {
   width: 100%;
   padding: 0.85rem 1rem;
   border-radius: 10px;
-  border: 1px solid #e6e9ef;
-  background: #fff;
+  border: 1px solid var(--glass-border); /* Border lebih halus */
+  background: rgba(255, 255, 255, 0.05); /* Background transparan */
+  color: var(--color-text); /* Warna teks input */
   font-size: 1rem;
   transition: all 0.18s ease;
 }
 .login-input::placeholder {
-  color: #98a0ab;
+  color: var(--color-text-secondary); /* Placeholder */
 }
 .login-input:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(15, 75, 217, 0.04);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.1); /* Shadow dari primary */
 }
 .login-input:focus {
   outline: none;
-  border-color: #0f4bd9;
-  box-shadow: 0 10px 30px rgba(15, 75, 217, 0.08);
+  border-color: var(--color-primary); /* Fokus primary */
+  background: rgba(255, 255, 255, 0.1); /* Fokus background */
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15); /* Fokus shadow */
   transform: none;
 }
 
@@ -523,45 +548,51 @@ body {
   align-items: center;
   justify-content: space-between;
   font-size: 0.9rem;
-  color: #6b7380;
+  color: var(--color-text-secondary); /* Warna teks sekunder */
 }
 .checkbox-inline input {
   margin-right: 0.5rem;
 }
 .forgot-link {
   text-decoration: none;
-  color: #0f4bd9;
+  color: var(--color-primary); /* Warna primary */
 }
 .forgot-link:hover {
   text-decoration: underline;
 }
 
+/* PERBAIKAN 7: Menyesuaikan tombol login agar sesuai dengan tema 
+*/
 .btn-login {
   display: inline-block;
   margin-top: 0.5rem;
   padding: 0.9rem 1rem;
   border-radius: 10px;
   border: none;
-  color: #fff;
-  background: linear-gradient(135deg, #0f4bd9 0%, #1e6ff3 100%);
+  color: var(--color-text);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-hover) 100%
+  );
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(15, 75, 217, 0.18);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.18);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 .btn-login:hover {
   transform: translateY(-3px);
-  box-shadow: 0 18px 40px rgba(15, 75, 217, 0.22);
+  box-shadow: 0 18px 40px rgba(59, 130, 246, 0.22);
 }
 
 .signup-note {
   font-size: 0.9rem;
-  color: #6b7380;
+  color: var(--color-text-secondary); /* Warna teks sekunder */
   margin-top: 0.6rem;
   text-align: center;
 }
 .signup-note a {
-  color: #0f4bd9;
+  color: var(--color-primary); /* Warna primary */
   text-decoration: none;
 }
 
