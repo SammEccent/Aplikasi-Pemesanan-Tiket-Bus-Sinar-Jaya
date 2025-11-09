@@ -60,21 +60,27 @@
                     </div>
 
                     <h1 id="register-heading" class="login-title">Buat Akun Baru</h1>
-                    <p class="login-sub">Daftar sekarang untuk mulai memesan tiket Anda.</p>
+                    <p class="login-sub">Lengkapi data di bawah ini untuk memulai.</p>
 
                     <form action="<?= BASEURL ?>auth/processRegister" method="POST" class="login-form" autocomplete="off">
 
                         <label class="visually-hidden" for="fullname">Nama Lengkap</label>
                         <input id="fullname" name="fullname" class="login-input" type="text" placeholder="Nama Lengkap" required>
 
+                        <label class="visually-hidden" for="nik">Nomor Induk Kependudukan (NIK)</label>
+                        <input id="nik" name="nik" class="login-input" type="text" placeholder="Nomor Induk Kependudukan (NIK)" required pattern="\d{16}" title="NIK harus terdiri dari 16 digit angka" maxlength="16">
+
+                        <label class="visually-hidden" for="tanggal_lahir">Tanggal Lahir</label>
+                        <input id="tanggal_lahir" name="tanggal_lahir" class="login-input" type="text" placeholder="Tanggal Lahir" required onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
+
                         <label class="visually-hidden" for="email">Alamat Email</label>
-                        <input id="email" name="email" class="login-input" type="email" placeholder="Alamat Email" required>
+                        <input id="email" name="email" class="login-input" type="email" placeholder="Alamat Email" required autocomplete="email">
 
                         <label class="visually-hidden" for="password">Kata Sandi</label>
-                        <input id="password" name="password" class="login-input" type="password" placeholder="Kata Sandi (min. 8 karakter)" required>
+                        <input id="password" name="password" class="login-input" type="password" placeholder="Kata Sandi (min. 8 karakter)" required autocomplete="new-password">
 
                         <label class="visually-hidden" for="confirm_password">Konfirmasi Kata Sandi</label>
-                        <input id="confirm_password" name="confirm_password" class="login-input" type="password" placeholder="Konfirmasi Kata Sandi" required>
+                        <input id="confirm_password" name="confirm_password" class="login-input" type="password" placeholder="Konfirmasi Kata Sandi" required autocomplete="new-password">
 
                         <div class="form-row">
                             <label class="checkbox-inline">

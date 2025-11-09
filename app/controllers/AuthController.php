@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function register()
     {
         $this->view('auth/register');
-    } 
+    }
 
     // Method untuk memproses login
     public function processLogin()
@@ -37,6 +37,7 @@ class AuthController extends Controller
         if ($user && password_verify($password, $user['password'])) {
             // Login berhasil
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['fullname'] = $user['fullname'];
             header('Location: ' . BASEURL);
             exit;
         } else {
@@ -53,6 +54,8 @@ class AuthController extends Controller
         // Ambil data dari form
         $fullname = $_POST['fullname'];
         $email = $_POST['email'];
+        $nik = $_POST['nik'];
+        $tanggal_lahir = $_POST['tanggal_lahir'];
         $password = $_POST['password'];
         $confirm_password = $_POST['confirm_password'];
         $terms = isset($_POST['terms']) ? true : false;
@@ -78,7 +81,9 @@ class AuthController extends Controller
         $data_to_save = [
             'fullname' => $fullname,
             'email' => $email,
-            'password' => $hashedPassword // Sudah di-hash
+            'nik' => $nik,
+            'tanggal_lahir' => $tanggal_lahir,
+            'password' => $hashedPassword
             // Pastikan kunci array ini cocok dengan yang diakses di UserModel->createUser()
         ];
 
@@ -94,4 +99,134 @@ class AuthController extends Controller
         }
         exit;
     }
-}   
+
+    // Method untuk menampilkan halaman profil
+    public function profile()
+    {
+        // Pastikan pengguna sudah login
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . BASEURL . 'auth/login');
+            exit;
+        }
+
+        // Ambil data pengguna dari database berdasarkan user_id di session
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+
+        // Siapkan data untuk dikirim ke view
+        $data = [
+            'pageTitle' => 'My Profile',
+            'user' => $user
+        ];
+
+        $this->view('auth/profile', $data);
+    }
+
+    // Method untuk menampilkan halaman edit profil
+    public function editProfile()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . BASEURL . 'auth/login');
+            exit;
+        }
+
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+
+        $data = [
+            'pageTitle' => 'Edit Profile',
+            'user' => $user
+        ];
+
+        $this->view('auth/edit_profile', $data);
+    }
+
+    // Method untuk memproses update profil
+    public function processEditProfile()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id'])) {
+            header('Location: ' . BASEURL);
+            exit;
+        }
+
+        $data = [
+            'id' => $_SESSION['user_id'],
+            'fullname' => $_POST['fullname'],
+            'nik' => $_POST['nik'],
+            'tanggal_lahir' => $_POST['tanggal_lahir']
+        ];
+
+        if ($this->userModel->updateUser($data)) {
+            // Update session fullname jika berubah
+            $_SESSION['fullname'] = $data['fullname'];
+            $_SESSION['success'] = 'Profil berhasil diperbarui.';
+            header('Location: ' . BASEURL . 'auth/profile');
+        } else {
+            $_SESSION['error'] = 'Gagal memperbarui profil. Silakan coba lagi.';
+            header('Location: ' . BASEURL . 'auth/editProfile');
+        }
+        exit;
+    }
+
+    // Method untuk menampilkan halaman ganti password
+    public function changePassword()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . BASEURL . 'auth/login');
+            exit;
+        }
+
+        $this->view('auth/change_password', ['pageTitle' => 'Change Password']);
+    }
+
+    // Method untuk memproses ganti password
+    public function processChangePassword()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id'])) {
+            header('Location: ' . BASEURL);
+            exit;
+        }
+
+        $current_password = $_POST['current_password'];
+        $new_password = $_POST['new_password'];
+        $confirm_new_password = $_POST['confirm_new_password'];
+
+        // 1. Validasi password baru
+        if ($new_password !== $confirm_new_password) {
+            $_SESSION['error'] = 'Kata sandi baru dan konfirmasi tidak cocok.';
+            header('Location: ' . BASEURL . 'auth/changePassword');
+            exit;
+        }
+
+        // 2. Verifikasi password saat ini
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+        if (!$user || !password_verify($current_password, $user['password'])) {
+            $_SESSION['error'] = 'Kata sandi saat ini salah.';
+            header('Location: ' . BASEURL . 'auth/changePassword');
+            exit;
+        }
+
+        // 3. Update password baru
+        $hashedPassword = password_hash($new_password, PASSWORD_BCRYPT);
+        if ($this->userModel->updatePassword($_SESSION['user_id'], $hashedPassword)) {
+            $_SESSION['success'] = 'Kata sandi berhasil diubah.';
+            header('Location: ' . BASEURL . 'auth/profile');
+        } else {
+            $_SESSION['error'] = 'Gagal mengubah kata sandi. Silakan coba lagi.';
+            header('Location: ' . BASEURL . 'auth/changePassword');
+        }
+        exit;
+    }
+
+    // Method untuk memproses logout
+    public function logout()
+    {
+        // Hapus semua variabel session
+        $_SESSION = array();
+
+        // Hancurkan session
+        session_destroy();
+
+        // Redirect ke halaman utama
+        header('Location: ' . BASEURL);
+        exit;
+    }
+}
