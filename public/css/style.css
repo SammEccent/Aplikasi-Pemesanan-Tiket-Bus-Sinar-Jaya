@@ -19,20 +19,190 @@ body {
   line-height: 1.6;
 }
 
-/* Header Styles */
-.main-header {
+/* New App Layout with Sidebar */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 200px; /* Lebar sidebar diperkecil lagi */
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
   position: fixed;
+  transition: width 0.3s ease;
   top: 0;
   left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 4rem;
-  background: rgba(10, 13, 20, 0.9);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
+  bottom: 0;
+  z-index: 1100;
 }
+
+.main-content {
+  flex: 1;
+  margin-left: 200px; /* Sesuaikan dengan lebar sidebar baru */
+  transition: margin-left 0.3s ease;
+  padding-top: 0; /* Header is gone, so no padding needed */
+}
+
+.sidebar-brand {
+  padding: 0.5rem 1rem; /* Padding horizontal untuk brand */
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem; /* Jarak antara ikon dan teks brand */
+  text-decoration: none;
+}
+
+.brand-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+.brand-text-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.sidebar .logo-text {
+  font-size: 1.125rem; /* Ukuran font brand lebih kecil */
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Jarak vertikal antar item menu lebih besar */
+}
+
+.sidebar .nav-link {
+  position: relative; /* Diperlukan untuk indikator aktif */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem; /* Padding lebih seimbang */
+  border-radius: 0.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text);
+}
+
+.sidebar .nav-link.active {
+  background-color: rgba(59, 130, 246, 0.1); /* Latar belakang biru transparan */
+  color: var(--color-text);
+  font-weight: 600; /* Teks lebih tebal saat aktif */
+}
+
+/* Indikator aktif baru: garis di kiri */
+.sidebar .nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  height: 60%;
+  width: 3px;
+  background-color: var(--color-primary);
+  border-radius: 0 4px 4px 0;
+}
+
+.nav-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.sidebar-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--glass-border);
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Tombol Toggle Sidebar */
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  margin-bottom: 0.5rem; /* Jarak dari link logout */
+}
+.sidebar-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text);
+}
+.sidebar-toggle .icon-expand { display: none; }
+.sidebar-toggle .icon-collapse { display: block; width: 1.5rem; height: 1.5rem; }
+
+/* Gaya untuk Sidebar Mode Ringkas (Collapsed) */
+.app-container.sidebar-collapsed .sidebar {
+  width: 72px; /* Lebar saat disembunyikan diperkecil lagi */
+}
+
+.app-container.sidebar-collapsed .main-content {
+  margin-left: 72px; /* Sesuaikan dengan lebar sidebar collapsed */
+}
+
+.app-container.sidebar-collapsed .sidebar .nav-text,
+.app-container.sidebar-collapsed .sidebar .brand-text-group {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  position: absolute; /* Mencegah teks mempengaruhi layout */
+  transition: opacity 0.1s ease;
+}
+
+.app-container.sidebar-collapsed .sidebar .nav-link,
+.app-container.sidebar-collapsed .sidebar .brand-link {
+  justify-content: center;
+}
+
+.app-container.sidebar-collapsed .sidebar .nav-icon,
+.app-container.sidebar-collapsed .sidebar .brand-icon {
+  margin-right: 0;
+}
+
+.app-container.sidebar-collapsed .sidebar-brand {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.app-container.sidebar-collapsed .sidebar-toggle .icon-expand { 
+  display: block; 
+  width: 1.5rem; 
+  height: 1.5rem;
+}
+.app-container.sidebar-collapsed .sidebar-toggle .icon-collapse { 
+  display: none; 
+}
+
+/* Header Styles */
 
 .logo {
   display: flex;
@@ -57,7 +227,8 @@ body {
   align-items: center;
 }
 
-.nav-link {
+.auth-nav .nav-link {
+  /* This can be removed or repurposed if not used elsewhere */
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -81,31 +252,6 @@ body {
 .signup:hover {
   background: var(--color-primary);
   color: var(--color-text);
-}
-
-/* Profile Link in Header */
-.profile-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* Mengurangi jarak antara ikon dan nama */
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  color: var(--color-primary); /* Menyamakan warna teks dengan ikon */
-  font-weight: 500; /* Sedikit menebalkan teks */
-  transition: all 0.3s ease;
-}
-
-.profile-link:hover {
-  background-color: var(--color-surface);
-  /* Mempertahankan warna teks saat hover agar konsisten */
-  color: var(--color-primary-hover);
-}
-
-.profile-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: var(--color-primary);
-  transition: color 0.3s ease;
 }
 
 /* Hero Section */
@@ -338,10 +484,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .main-header {
-    padding: 1rem 2rem;
-  }
-
   .hero-title {
     font-size: 2.5rem;
   }
@@ -374,10 +516,6 @@ body {
 }
 
 @media (max-width: 480px) {
-  .main-header {
-    padding: 1rem;
-  }
-
   .logo-text {
     font-size: 1.25rem;
   }
@@ -626,7 +764,6 @@ body {
   text-decoration: underline;
 }
 
-
 @media (max-width: 900px) {
   .auth-split {
     /* stacked on small screens: make image a top band */
@@ -644,6 +781,10 @@ body {
   .auth-form-side {
     padding: 2rem;
     justify-content: center;
+    min-height: auto; /* Allow content to determine height */
+  }
+  .main-content {
+    margin-left: 0; /* Full width on mobile */
   }
   .login-card {
     margin-top: -40px;
@@ -659,6 +800,9 @@ body {
 
 @media (max-width: 480px) {
   .login-card {
+    margin-top: -20px;
+    width: 100%;
+    max-width: 100%;
     padding: 1.25rem;
     border-radius: 12px;
   }
@@ -669,7 +813,7 @@ body {
 
 /* Profile Page Styles */
 .profile-page {
-  padding-top: 120px; /* Space for fixed header */
+  padding-top: 4rem; /* Adjusted padding */
   padding-bottom: 4rem;
   min-height: 80vh;
   display: flex;
@@ -809,7 +953,7 @@ body {
 /* Flash Message Styles */
 .flash-message {
   padding: 1rem 1.5rem;
-  margin: 100px auto -80px auto; /* Position it below header */
+  margin: 2rem auto -1rem auto; /* Position it inside main content */
   max-width: 650px; /* Match profile container width */
   border-radius: 0.75rem;
   font-weight: 500;
@@ -831,6 +975,47 @@ body {
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.flash-message.error {
+  background-color: rgba(220, 38, 38, 0.1); /* Red-100 */
+  color: #dc2626; /* Red-600 */
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer Styles */
+.main-footer {
+  padding: 1.5rem 2rem;
+  margin-top: auto; /* Mendorong footer ke bawah pada halaman dengan konten pendek */
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--glass-border);
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.footer-content p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
 }
