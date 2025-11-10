@@ -35,15 +35,19 @@ class MailHelper
             $mail->addAddress($toEmail, $toName);
 
             // Content
-            $resetLink = BASEURL . 'auth/resetPassword/' . $token;
             $mail->isHTML(true);
             $mail->Subject = 'Atur Ulang Kata Sandi Akun Sinar Jaya Anda';
+            $resetLink = BASEURL . 'auth/resetPassword/' . $token;
             $mail->Body    = "
                 <h2>Permintaan Atur Ulang Kata Sandi</h2>
                 <p>Halo " . htmlspecialchars($toName) . ",</p>
-                <p>Kami menerima permintaan untuk mengatur ulang kata sandi akun Sinar Jaya Anda. Klik tautan di bawah ini untuk melanjutkan:</p>
+                <p>Kami menerima permintaan untuk mengatur ulang kata sandi akun Anda. Klik tombol di bawah ini untuk melanjutkan.</p>
+                <p style='text-align: center;'>
+                    <a href='" . $resetLink . "' style='background-color: #0f4bd9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;'>Atur Ulang Kata Sandi</a>
+                </p>
+                <p>Tautan ini akan kedaluwarsa dalam 15 menit.</p>
+                <p>Jika Anda kesulitan mengklik tombol di atas, salin dan tempel URL di bawah ini ke browser web Anda:</p>
                 <p><a href='" . $resetLink . "'>" . $resetLink . "</a></p>
-                <p>Tautan ini akan kedaluwarsa dalam 1 jam.</p>
                 <p>Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan saja email ini.</p>
                 <br>
                 <p>Terima kasih,</p>

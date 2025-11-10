@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../Helpers/MailHelper.php';
 //model UserModel
 require_once __DIR__ . '/../Models/UserModel.php';
 
@@ -235,28 +236,32 @@ class AuthController extends Controller
         $user = $this->userModel->findUserByEmail($email);
         error_log("AuthController: processForgotPassword - User found by email: " . ($user ? $user['email'] : 'No user'));
 
-        if ($user) {
-            // Generate token
-            $token = bin2hex(random_bytes(50));
-            // Set expiration time (e.g., 1 hour from now)
-            $expires = date("Y-m-d H:i:s", time() + 3600);
+        // Pesan ini akan ditampilkan baik email ditemukan atau tidak, untuk alasan keamanan.
+        $_SESSION['success'] = 'Jika email Anda terdaftar, kami telah mengirimkan tautan untuk mengatur ulang kata sandi Anda. Silakan periksa kotak masuk Anda.';
 
-            if ($this->userModel->savePasswordResetToken($email, $token, $expires)) {
-                // Kirim email menggunakan MailHelper yang sudah kita buat
-                if (\App\Helpers\MailHelper::sendPasswordResetEmail($user['email'], $user['fullname'], $token)) {
-                    $_SESSION['success'] = 'Jika email Anda terdaftar, kami telah mengirimkan tautan untuk mengatur ulang kata sandi Anda. Silakan periksa kotak masuk Anda.';
-                } else {
-                    // Pesan jika email gagal terkirim
-                    $_SESSION['error'] = 'Gagal mengirim email reset. Silakan coba lagi nanti.';
-                }
-            } else {
-                $_SESSION['error'] = 'Gagal membuat token reset. Silakan coba lagi.';
+        if ($user) {
+            // Buat token reset yang aman
+            $token = bin2hex(random_bytes(50));
+            // Atur waktu kedaluwarsa (misalnya, 15 menit dari sekarang)
+            $expires = date("Y-m-d H:i:s", time() + 900);
+
+            $tokenSaved = $this->userModel->savePasswordResetToken($email, $token, $expires);
+            $emailSent = false;
+            if ($tokenSaved) {
+                // Kirim email menggunakan MailHelper dengan token
+                $emailSent = \App\Helpers\MailHelper::sendPasswordResetEmail($user['email'], $user['fullname'], $token);
             }
-        } else {
-            // Tampilkan pesan yang sama meskipun email tidak ditemukan untuk alasan keamanan
-            $_SESSION['success'] = 'Jika email Anda terdaftar, kami telah mengirimkan tautan untuk mengatur ulang kata sandi Anda. Silakan periksa kotak masuk Anda.';
+
+            if (!$tokenSaved || !$emailSent) {
+                // Jika ada kegagalan, catat error tapi jangan tampilkan ke pengguna
+                error_log("Gagal mengirim email reset password untuk {$email}. TokenSaved: {$tokenSaved}, EmailSent: {$emailSent}");
+                // Untuk keamanan, jangan beritahu pengguna bahwa ada error internal.
+                // Pesan sukses umum sudah diatur di atas.
+                $_SESSION['error'] = 'Terjadi kesalahan pada sistem. Silakan coba lagi nanti.';
+            }
         }
 
+        // Selalu arahkan kembali ke halaman forgot password
         header('Location: ' . BASEURL . 'auth/forgotPassword');
         exit;
     }
